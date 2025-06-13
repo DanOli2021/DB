@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+	<ApplicationIcon>AngelDB.ico</ApplicationIcon>
+	<SignAssembly>False</SignAssembly>
+	<_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
+ </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Core" Version="1.45.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.10.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Azure.Storage.Common" Version="12.22.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.21.0" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="DocumentFormat.OpenXmlSDK" Version="2.0.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="pythonnet" Version="3.0.5" />
+    <PackageReference Include="SSH.NET" Version="2024.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.2" />
+    <PackageReference Include="System.IO.Packaging" Version="9.0.2" />
+    <PackageReference Include="System.Management" Version="9.0.6" />
+    <PackageReference Include="System.Memory.Data" Version="9.0.2" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="py/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AzureSQL.cs" />
+    <Compile Remove="AzureTableStorage.cs" />
+    <Compile Remove="Globo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="AngelDB.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Accounts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="login.angel">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TablaZ.jSon">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="tables.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

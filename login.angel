@@ -1,0 +1,7 @@
+﻿// File batch demo
+// Shows command line batch processing
+
+VAR user = &PROMPT USER: >;
+VAR pass = &PROMPT PASSWORD PASSWORD: >;
+VAR result = &DB USER &VAR user PASSWORD &VAR pass;
+CONSOLE VAR result;
