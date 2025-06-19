@@ -1,8 +1,5 @@
 ﻿using AngelDBTools;
 using DB;
-using DocumentFormat.OpenXml.Office2010.CustomUI;
-using DocumentFormat.OpenXml.Spreadsheet;
-using MathNet.Numerics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -1341,6 +1338,17 @@ namespace AngelDB
                     try
                     {
                         this.Ollama = new OllamaClient(d["model"]);
+
+                        if (d["url"].ToLower().Contains("localhost")) 
+                        {
+                            if( this.Ollama.IsOllamaInstalled() == false)
+                            {
+                                result = "Error: Ollama not installed. Please install Ollama from https://ollama.com/";
+                                this.Ollama = null;
+                                break;
+                            }
+                        }
+
                         this.Ollama.BaseUrl = d["url"];
                         this.Ollama.Stream = stream;
 

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using Newtonsoft.Json;
+using System.IO;
 
 namespace AngelDB
 {
@@ -171,6 +173,42 @@ namespace AngelDB
                 return false;
             }
         }
+
+        public bool IsOllamaInstalled()
+        {
+            // Primero intentamos correr el comando
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = "ollama",
+                    Arguments = "--version",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(psi))
+                {
+                    process.WaitForExit(2000); // espera 2 segundos máximo
+                    if (process.ExitCode == 0) return true;
+                }
+            }
+            catch
+            {
+                // Si falla, seguimos al plan B
+            }
+
+            // Plan B: buscar el ejecutable en ruta típica
+            string fallbackPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Programs", "ollama", "ollama.exe"
+            );
+
+            return File.Exists(fallbackPath);
+        }
+
 
 
         static DataTable JsonToDataTable(string json)

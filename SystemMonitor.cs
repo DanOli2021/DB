@@ -11,7 +11,7 @@ using System.Net.NetworkInformation;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace AngelDB 
+namespace AngelDB
 {
     public class SystemMonitor
     {
