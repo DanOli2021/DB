@@ -326,7 +326,6 @@ namespace AngelDB
                     };
                 }
 
-
                 table_name = table_name.Trim().ToLower();
                 string database_directory = mainClass.BaseDirectory + mainClass.os_directory_separator + mainClass.account + mainClass.os_directory_separator + mainClass.database;
                 string database_connection_string = $"Data Source={database_directory + mainClass.os_directory_separator + "tables.db"};" + "version = 3";

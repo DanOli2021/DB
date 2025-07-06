@@ -30,7 +30,7 @@ namespace AngelDB {
             this.AddCommands.Add(command, definition);
             return "Ok.";
         }
-
+        
         public void SetCommands(Dictionary<string, string> commands)
         {
             this.commands = commands;
@@ -39,6 +39,14 @@ namespace AngelDB {
         public void SetVariables(Dictionary<string, string> vars)
         {
             this.vars = vars;
+        }
+
+        public void ShowCommands()
+        {
+            foreach (var item in this.commands)
+            {
+                Console.WriteLine($"{item.Key} --> {item.Value}");
+            }
         }
 
         public Dictionary<string, string> Interpreter(string command)
