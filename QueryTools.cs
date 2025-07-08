@@ -12,10 +12,10 @@ namespace AngelDB
     public class QueryTools
     {
 
-        string ConnectionString;
+        public string ConnectionString;
         public SQLiteConnection SQLConnection = null;
         public SQLiteCommand SQLCommand = null;
-        public List<string> ColumnList = new List<string>();
+        public List<string> ColumnList = [];
         public string InsertQuery = "";
         public string UpdateQuery = "";
         public string UpsertQuery = "";

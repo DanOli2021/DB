@@ -1,5 +1,6 @@
 ﻿using AngelDBTools;
 using DB;
+using MathNet.Numerics.Financial;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -591,7 +592,7 @@ namespace AngelDB
         }
 
 
-        public string Prompt(string command, bool ThrowError = false, DB operational_db = null, object main_object = null, TaskState taskState  = null)
+        public string Prompt(string command, bool ThrowError = false, DB operational_db = null, object main_object = null, TaskState taskState = null)
         {
 
             string Command = command;
@@ -765,7 +766,7 @@ namespace AngelDB
                     {
                         result = Tables.AlterTable(d, this);
                     }
-                    else 
+                    else
                     {
                         if (d["drop_column"] != "null")
                         {
@@ -1323,7 +1324,7 @@ namespace AngelDB
                         d["url"] = "http://localhost:11434/api/chat";
                     }
 
-                    if (d["model"] == "null") 
+                    if (d["model"] == "null")
                     {
                         d["model"] = "llama3.2";
                     }
@@ -1339,9 +1340,9 @@ namespace AngelDB
                     {
                         this.Ollama = new OllamaClient(d["model"]);
 
-                        if (d["url"].ToLower().Contains("localhost")) 
+                        if (d["url"].ToLower().Contains("localhost"))
                         {
-                            if( this.Ollama.IsOllamaInstalled() == false)
+                            if (this.Ollama.IsOllamaInstalled() == false)
                             {
                                 result = "Error: Ollama not installed. Please install Ollama from https://ollama.com/";
                                 this.Ollama = null;
@@ -1372,7 +1373,7 @@ namespace AngelDB
 
                     this.Ollama.Model = d["ollama_load_model"];
 
-                    if( this.Ollama.WarmUpModelAsync().GetAwaiter().GetResult())
+                    if (this.Ollama.WarmUpModelAsync().GetAwaiter().GetResult())
                     {
                         result = "Ok.";
                     }
@@ -1390,7 +1391,7 @@ namespace AngelDB
                         result = "Error: Ollama not initialized";
                         break;
                     }
-                    
+
                     this.Ollama.Model = d["ollama_unload_model"];
 
                     if (this.Ollama.PullModelAsync().GetAwaiter().GetResult())
@@ -1458,15 +1459,15 @@ namespace AngelDB
 
                         this.GPT = new OpenAIChatbot(this);
 
-                        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ANGELSQL_GPT_KEY"))) 
+                        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ANGELSQL_GPT_KEY")))
                         {
                             this.GPT.SetApiKey(Environment.GetEnvironmentVariable("ANGELSQL_GPT_KEY"));
                             Dictionary<string, string> gpt = new Dictionary<string, string>();
                             gpt.Add("start_chat", "");
                             this.GPT.StartChat(gpt);
                         }
-                        
-                        
+
+
                     }
 
                     result = this.GPT.ProcessCommand(d["gpt"]);
@@ -1550,7 +1551,7 @@ namespace AngelDB
 
                 case "python_file":
 
-                    if( this.PythonExecutor is null)
+                    if (this.PythonExecutor is null)
                     {
                         this.PythonExecutor = new PythonExecutor();
                     }
@@ -1568,7 +1569,7 @@ namespace AngelDB
                     {
                         result = "";
                     }
-                    else 
+                    else
                     {
                         result = this.LastPythonError;
                     }
@@ -1635,6 +1636,19 @@ namespace AngelDB
                     result = systemMonitor.GetSystemMetricsAsJsonAsync().GetAwaiter().GetResult();
                     break;
 
+                case "connection_info":
+
+                    var connectionInfo = new
+                    {
+                        Account = this.account,
+                        Database = this.database,
+                        User = this.user,
+                        Use_connected_server = this.use_connected_server,
+                        Always_use_AngelSQL = this.always_use_AngelSQL,
+                    };
+
+                    return JsonConvert.SerializeObject(connectionInfo, Formatting.Indented);
+
                 default:
 
                     result = "Error: No command given: " + commandkey;
@@ -1655,7 +1669,7 @@ namespace AngelDB
         }
 
 
-        public string RdpConnect(Dictionary<string, string> d) 
+        public string RdpConnect(Dictionary<string, string> d)
         {
             try
             {
@@ -2247,7 +2261,7 @@ namespace AngelDB
                 {
                     local_result = this.Prompt(d["save_to_grid"]);
                 }
-                
+
 
                 if (local_result.StartsWith("Error:"))
                 {
@@ -2462,7 +2476,7 @@ namespace AngelDB
                             this.Azure.Add(d["alias"], new AzureTable());
                             string result_local = this.Azure[d["alias"]].TableServiceClient(d["connect"]);
 
-                            if( result_local.StartsWith("Error:") ) 
+                            if (result_local.StartsWith("Error:"))
                             {
                                 return result_local;
                             }
@@ -3423,7 +3437,7 @@ namespace AngelDB
         }
 
         public string GetTimeStamp()
-        {            
+        {
             return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
         }
 
@@ -3461,7 +3475,7 @@ namespace AngelDB
         public string ConnectionString { get; set; }
         public string table_type = "";
         public string partition_name { get; set; }
-        public string file_name { get; set; }   
+        public string file_name { get; set; }
         public QueryTools sqlite { get; set; } = null;
 
         public string UpdateTimeStamp()
@@ -3477,6 +3491,16 @@ namespace AngelDB
         }
 
     }
+
+    public static class Cloner
+    {
+        public static T DeepClone<T>(T obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+    }
+
 
     public class TableInfo
     {

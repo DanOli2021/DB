@@ -154,7 +154,7 @@ namespace AngelDB {
 
                 //System info
                 { @"SYSTEM INFO", @"SYSTEM INFO#free" },
-
+                { @"CONNECTION INFO", @"CONNECTION INFO#free" },
                 { @"WHO IS", @"WHO IS#free;YOUR#free;DADY#free" }
             };
 

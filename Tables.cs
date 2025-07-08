@@ -523,7 +523,7 @@ namespace AngelDB
 
                 if (mainClass.SQLiteConnections.ContainsKey(account_database_table_partition))
                 {
-                    query = mainClass.SQLiteConnections[account_database_table_partition];
+                    query = new QueryTools(mainClass.SQLiteConnections[account_database_table_partition].ConnectionString);
                 }
                 else
                 {
@@ -1123,12 +1123,11 @@ namespace AngelDB
                     mainClass.partitions.TryAdd(account_database_table_partition, p);
                 }
 
-
                 string table_directory = result;
 
                 if (mainClass.SQLiteConnections.ContainsKey(account_database_table_partition))
                 {
-                    query = mainClass.SQLiteConnections[account_database_table_partition];
+                    query = new QueryTools(mainClass.SQLiteConnections[account_database_table_partition].ConnectionString);
                 }
                 else
                 {

@@ -1,0 +1,513 @@
+# Documentación de Comandos de AngelDB
+
+Este documento describe los comandos disponibles en AngelDB, un motor de base de datos que combina características de bases de datos NoSQL y DBMS tradicionales, con un enfoque en la gestión de particiones.
+
+## Convenciones de Parámetros:
+- `#Systemtoken`: Un token o identificador del sistema (ej. nombre de base de datos, nombre de cuenta).
+- `#free`: Texto libre, puede ser cualquier valor.
+- `#freeoptional`: Texto libre opcional.
+- `#optional`: Parámetro opcional.
+- `#password`: Una contraseña.
+- `#code`: Un bloque de código.
+
+---
+
+## Comandos de Cuentas y Usuarios
+
+### `USE <Systemtoken> [DATABASE <freeoptional>]`
+- **Descripción:** Cambia a la cuenta o base de datos especificada.
+- **Ejemplo:** `USE MyAccount DATABASE MyDatabase`
+
+### `ACCOUNT [optional]`
+- **Descripción:** Muestra información de la cuenta actual.
+- **Ejemplo:** `ACCOUNT`
+
+### `CLOSE ACCOUNT [freeoptional]`
+- **Descripción:** Cierra la sesión de la cuenta actual.
+- **Ejemplo:** `CLOSE ACCOUNT`
+
+### `CREATE ACCOUNT <Systemtoken> SUPERUSER <Systemtoken> PASSWORD <password> [NAME <freeoptional>]`
+- **Descripción:** Crea una nueva cuenta de usuario.
+- **Ejemplo:** `CREATE ACCOUNT NewUser SUPERUSER AdminUser PASSWORD MyStrongPassword NAME "New User Account"`
+
+### `USE ACCOUNT <Systemtoken>`
+- **Descripción:** Cambia a la cuenta de usuario especificada.
+- **Ejemplo:** `USE ACCOUNT AnotherUser`
+
+### `DELETE ACCOUNT <Systemtoken>`
+- **Descripción:** Elimina una cuenta de usuario.
+- **Ejemplo:** `DELETE ACCOUNT OldUser`
+
+### `UNDELETE ACCOUNT <Systemtoken>`
+- **Descripción:** Restaura una cuenta de usuario eliminada.
+- **Ejemplo:** `UNDELETE ACCOUNT OldUser`
+
+### `GET ACCOUNTS [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de cuentas, opcionalmente filtradas por una condición.
+- **Ejemplo:** `GET ACCOUNTS WHERE Status = 'Active'`
+
+### `CHANGE MASTER <free> TO USER <Systemtoken> PASSWORD <password>`
+- **Descripción:** Cambia la contraseña de un usuario maestro.
+- **Ejemplo:** `CHANGE MASTER Admin TO USER AdminUser PASSWORD NewAdminPassword`
+
+### `ADD MASTER <free> TO ACCOUNT <Systemtoken> USER <Systemtoken> PASSWORD <password> [NAME <freeoptional>] [UNIQUE]`
+- **Descripción:** Añade un usuario maestro a una cuenta.
+- **Ejemplo:** `ADD MASTER NewMaster TO ACCOUNT MyAccount USER MasterUser PASSWORD MasterPass UNIQUE`
+
+### `UPDATE MASTER ACCOUNT <free> FROM ACCOUNT <Systemtoken> PASSWORD <password>`
+- **Descripción:** Actualiza la contraseña de una cuenta maestra.
+- **Ejemplo:** `UPDATE MASTER ACCOUNT Admin FROM ACCOUNT MyAccount PASSWORD UpdatedPass`
+
+### `DELETE MASTER ACCOUNT <free> FROM ACCOUNT <Systemtoken>`
+- **Descripción:** Elimina una cuenta maestra.
+- **Ejemplo:** `DELETE MASTER ACCOUNT Admin FROM ACCOUNT MyAccount`
+
+### `GET MASTER ACCOUNTS [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de cuentas maestras, opcionalmente filtradas.
+- **Ejemplo:** `GET MASTER ACCOUNTS WHERE Type = 'Primary'`
+
+### `MY LEVEL <free>`
+- **Descripción:** Muestra el nivel de privilegio del usuario actual.
+- **Ejemplo:** `MY LEVEL`
+
+## Comandos de Bases de Datos
+
+### `DATABASE [optional]`
+- **Descripción:** Muestra información de la base de datos actual.
+- **Ejemplo:** `DATABASE`
+
+### `CREATE DATABASE <Systemtoken>`
+- **Descripción:** Crea una nueva base de datos.
+- **Ejemplo:** `CREATE DATABASE MyNewDB`
+
+### `USE DATABASE <Systemtoken>`
+- **Descripción:** Cambia a la base de datos especificada.
+- **Ejemplo:** `USE DATABASE SalesDB`
+
+### `DELETE DATABASE <Systemtoken>`
+- **Descripción:** Elimina una base de datos.
+- **Ejemplo:** `DELETE DATABASE OldDB`
+
+### `UNDELETE DATABASE <Systemtoken>`
+- **Descripción:** Restaura una base de datos eliminada.
+- **Ejemplo:** `UNDELETE DATABASE OldDB`
+
+### `GET DATABASES [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de bases de datos, opcionalmente filtradas.
+- **Ejemplo:** `GET DATABASES WHERE Size > 100MB`
+
+### `CREATE LOGIN <Systemtoken> [TO DATABASE <freeoptional>] PASSWORD <password> [NAME <freeoptional>] [TABLES <freeoptional>] [READ ONLY]`
+- **Descripción:** Crea un nuevo login para acceder a la base de datos.
+- **Ejemplo:** `CREATE LOGIN WebUser TO DATABASE MyDatabase PASSWORD WebPass TABLES "Orders,Products" READ ONLY`
+
+### `VALIDATE LOGIN <Systemtoken> PASSWORD <password>`
+- **Descripción:** Valida las credenciales de un login.
+- **Ejemplo:** `VALIDATE LOGIN MyUser PASSWORD MyPass`
+
+### `DELETE LOGIN <Systemtoken>`
+- **Descripción:** Elimina un login.
+- **Ejemplo:** `DELETE LOGIN OldLogin`
+
+### `UNDELETE LOGIN <Systemtoken>`
+- **Descripción:** Restaura un login eliminado.
+- **Ejemplo:** `UNDELETE LOGIN OldLogin`
+
+### `GET LOGINS [WHERE <freeoptional>] [ORDER BY <freeoptional>]`
+- **Descripción:** Obtiene una lista de logins, opcionalmente filtrados y ordenados.
+- **Ejemplo:** `GET LOGINS WHERE Status = 'Active' ORDER BY Name ASC`
+
+### `GET USERS [WHERE <freeoptional>] [ORDER BY <freeoptional>]`
+- **Descripción:** Obtiene una lista de usuarios, opcionalmente filtrados y ordenados.
+- **Ejemplo:** `GET USERS WHERE Role = 'Admin' ORDER BY LastLogin DESC`
+
+## Comandos de Tablas y Datos
+
+### `CREATE TABLE <Systemtoken> FIELD LIST <free> [STORAGE <freeoptional>] [TYPE SEARCH]`
+- **Descripción:** Crea una nueva tabla con una lista de campos.
+- **Ejemplo:** `CREATE TABLE Customers FIELD LIST "ID INT PRIMARY KEY, Name TEXT, Email TEXT" STORAGE "LocalDisk"`
+
+### `CREATE PARTITION RULE <free> TABLE <free> PARTITION KEY <free> CONNECTION <free>`
+- **Descripción:** Crea una regla de partición para una tabla.
+- **Ejemplo:** `CREATE PARTITION RULE ByRegion TABLE Sales PARTITION KEY Region CONNECTION "RemoteServer"`
+
+### `DELETE PARTITION RULE <free> ACCOUNT <free> DATABASE <free> TABLE <free> PARTITION KEY <free>`
+- **Descripción:** Elimina una regla de partición.
+- **Ejemplo:** `DELETE PARTITION RULE ByRegion ACCOUNT MyAccount DATABASE SalesDB TABLE Sales PARTITION KEY Region`
+
+### `GET PARTITION RULES [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de reglas de partición, opcionalmente filtradas.
+- **Ejemplo:** `GET PARTITION RULES WHERE Table = 'Orders'`
+
+### `DELETE TABLE <Systemtoken>`
+- **Descripción:** Elimina una tabla.
+- **Ejemplo:** `DELETE TABLE OldTable`
+
+### `ALTER TABLE <free> [ADD COLUMN <freeoptional>] [DROP COLUMN <freeoptional>] [REDEFINE COLUMN <freeoptional>]`
+- **Descripción:** Modifica la estructura de una tabla (añadir, eliminar o redefinir columnas).
+- **Ejemplo:** `ALTER TABLE Products ADD COLUMN Price DECIMAL`
+
+### `CREATE INDEX <free> ON TABLE <free> COLUMN <free>`
+- **Descripción:** Crea un índice en una columna de una tabla para mejorar el rendimiento de las consultas.
+- **Ejemplo:** `CREATE INDEX idx_customer_name ON TABLE Customers COLUMN Name`
+
+### `VACUUM TABLE <free> [PARTITION <freeoptional>]`
+- **Descripción:** Optimiza el espacio de almacenamiento de una tabla o una partición específica.
+- **Ejemplo:** `VACUUM TABLE MyTable PARTITION '2023-Q1'`
+
+### `INSERT INTO <Systemtoken> [PARTITION KEY <freeoptional>] [UPSERT] [EXCLUDE COLUMNS <freeoptional>] [SPEED UP] VALUES <free>`
+- **Descripción:** Inserta nuevos registros en una tabla. `UPSERT` actualiza si el registro ya existe.
+- **Ejemplo:** `INSERT INTO Orders PARTITION KEY '2024' VALUES "1,'ItemA',100"`
+
+### `UPSERT INTO <Systemtoken> [PARTITION KEY <freeoptional>] [EXCLUDE COLUMNS <freeoptional>] [SPEED UP] VALUES <free>`
+- **Descripción:** Inserta o actualiza registros en una tabla.
+- **Ejemplo:** `UPSERT INTO Products VALUES "ID=1, Name='New Product', Price=25.00"`
+
+### `COPY TO <Systemtoken> FROM <code> [STORAGE <freeoptional>] [TYPE SEARCH]`
+- **Descripción:** Copia datos desde una fuente (código) a una tabla.
+- **Ejemplo:** `COPY TO NewTable FROM "SELECT * FROM OldTable"`
+
+### `IMPORT FROM <free> FILE TYPE <free> TO <Systemtoken> [TYPE SEARCH] [STORAGE <freeoptional>]`
+- **Descripción:** Importa datos desde un archivo de un tipo específico a una tabla.
+- **Ejemplo:** `IMPORT FROM 'data.csv' FILE TYPE CSV TO MyTable`
+
+### `EXPORT TO <free> FROM <code> TO FILE <free> TYPE <free>`
+- **Descripción:** Exporta datos desde una consulta a un archivo de un tipo específico.
+- **Ejemplo:** `EXPORT TO 'report.json' FROM "SELECT * FROM Sales" TO FILE 'sales_report.json' TYPE JSON`
+
+### `UPDATE <free> [PARTITION KEY <freeoptional>] SET <free> WHERE <free> [SYNC]`
+- **Descripción:** Actualiza registros en una tabla que cumplen una condición. `SYNC` sincroniza los cambios.
+- **Ejemplo:** `UPDATE Customers SET Email = 'new@example.com' WHERE ID = 123 SYNC`
+
+### `DELETE FROM <Systemtoken> PARTITION KEY <free> WHERE <free>`
+- **Descripción:** Elimina registros de una tabla que cumplen una condición en una partición específica.
+- **Ejemplo:** `DELETE FROM Logs PARTITION KEY '2023-12' WHERE Level = 'DEBUG'`
+
+### `SELECT <free> FROM <Systemtoken> [PARTITION KEY <freeoptional>] [WHERE <freeoptional>] [GROUP BY <freeoptional>] [ORDER BY <freeoptional>] [LIMIT <freeoptional>] [AS CSV FILE <freeoptional>] [AS ARFF FILE <freeoptional>] [CLASS <freeoptional>] [VERBOSE] [NO RULES] [READ LOCKED]`
+- **Descripción:** Consulta datos de una tabla con varias opciones de filtrado, agrupación, ordenación y formato de salida.
+- **Ejemplo:** `SELECT Name, Email FROM Users WHERE Age > 30 ORDER BY Name ASC LIMIT 10 AS CSV FILE 'users.csv'`
+
+### `SAVE TO <free> SOURCE <code> [AS CSV] [STRING DELIMITER <freeoptional>]`
+- **Descripción:** Guarda el resultado de una consulta o código en una ubicación especificada, opcionalmente como CSV.
+- **Ejemplo:** `SAVE TO 'output.txt' SOURCE "SELECT * FROM Products" AS CSV`
+
+### `READ CSV <free> [VALUE SEPARATOR <freeoptional>] [COLUMNS AS NUMBERS <freeoptional>] [FIRST AS HEADER]`
+- **Descripción:** Lee un archivo CSV, con opciones para el separador de valores, columnas numéricas y cabecera.
+- **Ejemplo:** `READ CSV 'data.csv' VALUE SEPARATOR ';' FIRST AS HEADER`
+
+### `GET TABLES [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de tablas, opcionalmente filtradas.
+- **Ejemplo:** `GET TABLES WHERE Name LIKE 'temp%'`
+
+### `GET STRUCTURE <free> FROM <free>`
+- **Descripción:** Obtiene la estructura de una tabla o base de datos.
+- **Ejemplo:** `GET STRUCTURE MyTable FROM MyDatabase`
+
+## Comandos de Particiones
+
+### `GET PARTITIONS <free> FROM TABLE <Systemtoken> [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de particiones para una tabla específica, opcionalmente filtradas.
+- **Ejemplo:** `GET PARTITIONS FROM TABLE SalesData WHERE Year = 2023`
+
+### `DELETE PARTITIONS <free> FROM TABLE <Systemtoken> WHERE <free> [ONLY FILES]`
+- **Descripción:** Elimina particiones de una tabla que cumplen una condición. `ONLY FILES` elimina solo los archivos de la partición.
+- **Ejemplo:** `DELETE PARTITIONS FROM TABLE OldLogs WHERE Date < '2023-01-01' ONLY FILES`
+
+### `MOVE PARTITION <free> FROM TABLE <free> TO CONNECTION <free> [VERBOSE]`
+- **Descripción:** Mueve una partición de una tabla a otra conexión (ubicación).
+- **Ejemplo:** `MOVE PARTITION 'Q1_2024' FROM TABLE FinancialData TO CONNECTION "ArchiveServer" VERBOSE`
+
+### `COMPRESS PARTITION <free> FROM TABLE <free>`
+- **Descripción:** Comprime una partición de una tabla para ahorrar espacio.
+- **Ejemplo:** `COMPRESS PARTITION 'OldData' FROM TABLE HistoricalRecords`
+
+### `DECOMPRESS PARTITION <free> FROM TABLE <free>`
+- **Descripción:** Descomprime una partición de una tabla.
+- **Ejemplo:** `DECOMPRESS PARTITION 'OldData' FROM TABLE HistoricalRecords`
+
+## Comandos de Sincronización
+
+### `CREATE SYNC <free> FROM TABLE <free> [FROM PARTITIONS <freeoptional>] FROM CONNECTION <free> [FROM ACCOUNT <freeoptional>] [FROM DATABASE <freeoptional>] TO CONNECTION <free> [TO ACCOUNT <freeoptional>] [TO DATABASE <freeoptional>] [TO TABLE <freeoptional>]`
+- **Descripción:** Crea una configuración de sincronización entre tablas o particiones.
+- **Ejemplo:** `CREATE SYNC DailySales FROM TABLE Sales FROM CONNECTION "SourceDB" TO CONNECTION "TargetDB" TO TABLE SalesArchive`
+
+### `GET SYNCS [WHERE <freeoptional>]`
+- **Descripción:** Obtiene una lista de configuraciones de sincronización, opcionalmente filtradas.
+- **Ejemplo:** `GET SYNCS WHERE Status = 'Active'`
+
+### `DELETE SYNC <free>`
+- **Descripción:** Elimina una configuración de sincronización.
+- **Ejemplo:** `DELETE SYNC DailySales`
+
+### `CREATE SYNC DATABASE <free> SOURCE CONNECTION <free> TARGET CONNECTION <free>`
+- **Descripción:** Crea una configuración de sincronización a nivel de base de datos.
+- **Ejemplo:** `CREATE SYNC DATABASE MainDB_Backup SOURCE CONNECTION "ProdDB" TARGET CONNECTION "BackupServer"`
+
+### `SYNC DATABASE <free> [ROWS PER CYCLE <freeoptional>] [EXCLUDE TABLES <freeptiopnal>] [LOG FILE <freeoptional>] [PARTITIONS TO PROCESS <freeoptional>] [SHOW LOG]`
+- **Descripción:** Ejecuta una sincronización de base de datos con varias opciones de control.
+- **Ejemplo:** `SYNC DATABASE MainDB_Backup ROWS PER CYCLE 1000 LOG FILE 'sync.log' SHOW LOG`
+
+### `GET MAX SYNC TIME <free> [FROM TABLE <freeoptional>] [WHERE <freeoptional>]`
+- **Descripción:** Obtiene el tiempo de la última sincronización para una tabla o condición.
+- **Ejemplo:** `GET MAX SYNC TIME MySync FROM TABLE Orders`
+
+### `UPDATE PARTITION <free> FROM TABLE <free> TIME STAMP <free>`
+- **Descripción:** Actualiza la marca de tiempo de una partición en una tabla.
+- **Ejemplo:** `UPDATE PARTITION 'Q2_2024' FROM TABLE SalesData TIME STAMP '2024-06-30 23:59:59'`
+
+### `SYNC NOW <free> [PARTITIONS CONDITION <freeoptional>] [PARTITIONS TO PROCESS <freeoptional>] [COLUMNS <freeoptional>] [ROWS <freeoptional>] [SHOW LOG] [LOG FILE <freeoptional>] [CHANGE TO SEARCH <optional>] [WHERE <freeoptional>]`
+- **Descripción:** Inicia una sincronización inmediata con opciones detalladas para particiones, columnas, filas y logging.
+- **Ejemplo:** `SYNC NOW MySync PARTITIONS CONDITION "Status='Pending'" SHOW LOG`
+
+## Comandos de Archivos y Sistema
+
+### `GET FILE <free> BASE 64 <free> FROM <Systemtoken> PARTITION KEY <free> [WHERE <freeoptional>]`
+- **Descripción:** Obtiene un archivo codificado en Base64 desde una ubicación específica.
+- **Ejemplo:** `GET FILE 'image.jpg' BASE 64 FROM MyTable PARTITION KEY 'Images' WHERE ID = 1`
+
+### `DELETE FILE <free> FROM <Systemtoken> PARTITION KEY <free> WHERE <free>`
+- **Descripción:** Elimina un archivo de una ubicación específica.
+- **Ejemplo:** `DELETE FILE 'old_doc.pdf' FROM Documents PARTITION KEY 'Archives' WHERE Date < '2020-01-01'`
+
+### `WRITE FILE <free> VALUES <free>`
+- **Descripción:** Escribe contenido en un archivo.
+- **Ejemplo:** `WRITE FILE 'log.txt' VALUES "This is a log entry."`
+
+### `READ FILE <free>`
+- **Descripción:** Lee el contenido de un archivo.
+- **Ejemplo:** `READ FILE 'config.json'`
+
+### `SYSTEM INFO <free>`
+- **Descripción:** Muestra información del sistema.
+- **Ejemplo:** `SYSTEM INFO`
+
+### `REMOTE DESKTOP <free> [PORT <freeoptional>] [USER <freeoptional>] [PASSWORD <freeoptional>] [WIDTH <freeoptional>] [HEIGHT <freeoptional>] [FULL SCREEN] [ADMIN] [REDIRECT DISKS] [REDIRECT PRINTERS] [REDIRECT CLIPBOARD]`
+- **Descripción:** Controla la conexión de escritorio remoto en Windows.
+- **Ejemplo:** `REMOTE DESKTOP "192.168.1.100" PORT 3389 USER "admin" PASSWORD "password" FULL SCREEN`
+
+### `VERSION <free>`
+- **Descripción:** Muestra la versión actual de AngelDB.
+- **Ejemplo:** `VERSION`
+
+## Comandos de Desarrollo y Scripting
+
+### `COMPILE <free> [ASSEMBLY NAME <freeoptional>]`
+- **Descripción:** Compila código, opcionalmente especificando el nombre del ensamblado.
+- **Ejemplo:** `COMPILE MyCode.cs ASSEMBLY NAME MyAssembly`
+
+### `COMPILE TO DLL <free> [TO FILE <freeoptional>]`
+- **Descripción:** Compila código a una DLL, opcionalmente especificando el archivo de salida.
+- **Ejemplo:** `COMPILE TO DLL MyLibrary.cs TO FILE 'bin/MyLibrary.dll'`
+
+### `SCRIPT FILE <free> [REFERENCES <freeoptional>] [RECOMPILE] [ON MAIN DIRECTORY] [ON DATABASE] [ON APPLICATION DIRECTORY] [ON TABLE <freeoptional>] [MESSAGE <freeoptional>] [DATA <freeoptional>]`
+- **Descripción:** Ejecuta un archivo de script con varias opciones de referencia, recompilación y contexto.
+- **Ejemplo:** `SCRIPT FILE 'init.sql' ON DATABASE MyDatabase`
+
+### `IMPORT SCRIPTS DIRECTORY <free> TYPE <free>`
+- **Descripción:** Importa scripts desde un directorio de un tipo específico.
+- **Ejemplo:** `IMPORT SCRIPTS DIRECTORY 'scripts/sql' TYPE SQL`
+
+### `IMPORT SCRIPT FILE <free>`
+- **Descripción:** Importa un archivo de script.
+- **Ejemplo:** `IMPORT SCRIPT FILE 'my_script.js'`
+
+### `DB SCRIPT <free> [MAIN DIRECTORY <freeoptional>] [REFERENCES <freeoptional>] [RECOMPILE] [MESSAGE <freeoptional>] [DATA <freeoptional>]`
+- **Descripción:** Ejecuta un script de base de datos con opciones de directorio principal, referencias y recompilación.
+- **Ejemplo:** `DB SCRIPT 'update_schema.sql' RECOMPILE`
+
+### `PYTHON FILE <free> [PATH <freeoptional>] [MESSAGE <freeoptional>]`
+- **Descripción:** Ejecuta un archivo Python.
+- **Ejemplo:** `PYTHON FILE 'my_script.py' PATH '/usr/local/bin'`
+
+### `PYTHON SET PATH <free>`
+- **Descripción:** Establece la ruta para la ejecución de scripts Python.
+- **Ejemplo:** `PYTHON SET PATH '/opt/python/envs/myenv'`
+
+### `PYTHON GET LAST ERROR <free>`
+- **Descripción:** Obtiene el último error de ejecución de Python.
+- **Ejemplo:** `PYTHON GET LAST ERROR`
+
+### `PYTHON GET LAST WARNING <free>`
+- **Descripción:** Obtiene la última advertencia de ejecución de Python.
+- **Ejemplo:** `PYTHON GET LAST WARNING`
+
+### `PYTHON GET LAST RESULT <free>`
+- **Descripción:** Obtiene el último resultado de ejecución de Python.
+- **Ejemplo:** `PYTHON GET LAST RESULT`
+
+## Comandos de Integración y Utilidades
+
+### `SQL SERVER <free>`
+- **Descripción:** Permite la interacción con un servidor SQL Server.
+- **Ejemplo:** `SQL SERVER "SELECT * FROM MySqlServer.dbo.Customers"`
+
+### `BUSINESS <code>`
+- **Descripción:** Ejecuta lógica de negocio definida en un bloque de código.
+- **Ejemplo:** `BUSINESS "CalculateTotalSales(2024)"`
+
+### `USE TABLE <Systemtoken> [PARTITION KEY <freeoptional>] [WHERE <freeoptional>] [ORDER BY <freeoptional>]`
+- **Descripción:** Selecciona una tabla para operaciones posteriores, con opciones de partición, filtrado y ordenación.
+- **Ejemplo:** `USE TABLE Products PARTITION KEY 'Active' WHERE Category = 'Electronics'`
+
+### `VAR <Systemtoken> [= <freeoptional>]`
+- **Descripción:** Declara o asigna un valor a una variable.
+- **Ejemplo:** `VAR MyVariable = "Hello"`
+
+### `GET VARS <free>`
+- **Descripción:** Muestra una lista de variables definidas.
+- **Ejemplo:** `GET VARS`
+
+### `AZURE <free>`
+- **Descripción:** Permite la interacción con servicios de Azure.
+- **Ejemplo:** `AZURE "ListBlobContainers"`
+
+### `CREATE DB <free> CONNECTION STRING <free>`
+- **Descripción:** Crea una base de datos utilizando una cadena de conexión.
+- **Ejemplo:** `CREATE DB MyAzureDB CONNECTION STRING "DefaultEndpointsProtocol=https;AccountName=..."`
+
+### `PROMPT DB <free> COMMAND <free>`
+- **Descripción:** Ejecuta un comando en una base de datos a través de un prompt.
+- **Ejemplo:** `PROMPT DB MyDatabase COMMAND "SELECT COUNT(*) FROM Users"`
+
+### `GET DB LIST <free>`
+- **Descripción:** Obtiene una lista de bases de datos configuradas.
+- **Ejemplo:** `GET DB LIST`
+
+### `REMOVE DB <free>`
+- **Descripción:** Elimina una configuración de base de datos.
+- **Ejemplo:** `REMOVE DB MyOldDB`
+
+### `WEB FORM <free>`
+- **Descripción:** Abre o interactúa con un formulario web.
+- **Ejemplo:** `WEB FORM "Login"`
+
+### `= <free> [DATA <freeoptional>]`
+- **Descripción:** Asigna un valor o realiza una operación de igualdad.
+- **Ejemplo:** `= 1 + 1`
+
+### `GET URL <free>`
+- **Descripción:** Obtiene el contenido de una URL.
+- **Ejemplo:** `GET URL "https://api.example.com/data"`
+
+### `SEND TO WEB <free> [CONTEXT DATA <freeoptional>] [SOURCE <freeoptional>]`
+- **Descripción:** Envía datos a una aplicación web.
+- **Ejemplo:** `SEND TO WEB "UpdateStatus" CONTEXT DATA "{'status':'completed'}"`
+
+### `SAVE TO GRID <free> [JSON <freeoptional>] AS TABLE <free> [MERGE DATA]`
+- **Descripción:** Guarda datos en una cuadrícula (grid), opcionalmente como JSON o fusionando datos.
+- **Ejemplo:** `SAVE TO GRID AS TABLE MyGrid MERGE DATA`
+
+### `SAVE TO TABLE <free> [PARTITION KEY <freeoptional>] [SOURCE <freeoptional>] [JSON <freeoptional>] [ID COLUMN <freeoptional>]`
+- **Descripción:** Guarda datos en una tabla, con opciones para partición, fuente, JSON y columna de ID.
+- **Ejemplo:** `SAVE TO TABLE NewTable PARTITION KEY '2024' SOURCE "SELECT * FROM TempData"`
+
+### `GRID <free> [AS JSON]`
+- **Descripción:** Muestra el contenido de una cuadrícula (grid), opcionalmente como JSON.
+- **Ejemplo:** `GRID AS JSON`
+
+### `GRID INSERT ON <free> [ID <freeoptional>] VALUES <free>`
+- **Descripción:** Inserta valores en una cuadrícula (grid).
+- **Ejemplo:** `GRID INSERT ON MyGrid ID 1 VALUES "Name='Test',Value=10"`
+
+### `SPEED UP <free>`
+- **Descripción:** Optimiza el rendimiento de una operación.
+- **Ejemplo:** `SPEED UP INSERT`
+
+### `ANGEL <free>`
+- **Descripción:** Comando genérico para operaciones relacionadas con AngelDB.
+- **Ejemplo:** `ANGEL STATUS`
+
+### `PROMPT <free>`
+- **Descripción:** Muestra un mensaje en la consola y espera una entrada del usuario.
+- **Ejemplo:** `PROMPT "Enter your name:"`
+
+### `PROMPT PASSWORD <free>`
+- **Descripción:** Solicita una contraseña de forma segura.
+- **Ejemplo:** `PROMPT PASSWORD "Enter your password:"`
+
+### `BATCH <free> [SHOW IN CONSOLE]`
+- **Descripción:** Ejecuta un conjunto de comandos en modo batch.
+- **Ejemplo:** `BATCH "Command1;Command2" SHOW IN CONSOLE`
+
+### `BATCH FILE <free> [SHOW IN CONSOLE]`
+- **Descripción:** Ejecuta comandos desde un archivo batch.
+- **Ejemplo:** `BATCH FILE 'my_batch.txt'`
+
+### `READ EXCEL <free> [AS TABLE <freeoptional>] [SHEET <freeoptional>] [ON MEMORY] [FIRST ROW AS HEADER]`
+- **Descripción:** Lee un archivo Excel, opcionalmente como tabla, hoja específica, en memoria o con la primera fila como cabecera.
+- **Ejemplo:** `READ EXCEL 'data.xlsx' AS TABLE MyExcelData SHEET 'Sheet1' FIRST ROW AS HEADER`
+
+### `CREATE EXCEL <free> JSON VALUES <free>`
+- **Descripción:** Crea un archivo Excel a partir de valores JSON.
+- **Ejemplo:** `CREATE EXCEL 'output.xlsx' JSON VALUES "[{'Name':'A','Value':1},{'Name':'B','Value':2}]"`
+
+### `STATISTICS <free>`
+- **Descripción:** Muestra estadísticas de la base de datos o de una tabla.
+- **Ejemplo:** `STATISTICS MyTable`
+
+### `MYBUSINESS POS <free>`
+- **Descripción:** Comando relacionado con el punto de venta de MyBusiness.
+- **Ejemplo:** `MYBUSINESS POS "GetDailySales"`
+
+### `GPT <free>`
+- **Descripción:** Permite la interacción con modelos GPT.
+- **Ejemplo:** `GPT "Generate a SQL query for users table"`
+
+### `OLLAMA <free> [URL <freeoptional>] [MODEL <freeoptional>] [STREAM]`
+- **Descripción:** Permite la interacción con modelos Ollama.
+- **Ejemplo:** `OLLAMA "What is the capital of France?" MODEL "llama2"`
+
+### `OLLAMA LOAD MODEL <free>`
+- **Descripción:** Carga un modelo Ollama.
+- **Ejemplo:** `OLLAMA LOAD MODEL "llama2"`
+
+### `OLLAMA UNLOAD MODEL <free>`
+- **Descripción:** Descarga un modelo Ollama.
+- **Ejemplo:** `OLLAMA UNLOAD MODEL "llama2"`
+
+### `OLLAMA ADD SYSTEM MESSAGE <free>`
+- **Descripción:** Añade un mensaje de sistema a la conversación de Ollama.
+- **Ejemplo:** `OLLAMA ADD SYSTEM MESSAGE "You are a helpful assistant."`
+
+### `OLLAMA ADD ASSISTANT MESSAGE <free>`
+- **Descripción:** Añade un mensaje de asistente a la conversación de Ollama.
+- **Ejemplo:** `OLLAMA ADD ASSISTANT MESSAGE "Hello, how can I help you?"`
+
+### `OLLAMA CLEAR <free>`
+- **Descripción:** Limpia el historial de conversación de Ollama.
+- **Ejemplo:** `OLLAMA CLEAR`
+
+### `OLLAMA PROMPT <free>`
+- **Descripción:** Envía un prompt a Ollama.
+- **Ejemplo:** `OLLAMA PROMPT "Tell me a story."`
+
+### `POST API <free> [ACCOUNT <freeoptional>] API <free> [LANGUAGE <freeoptional>] MESSAGE <free>`
+- **Descripción:** Realiza una solicitud POST a una API.
+- **Ejemplo:** `POST API "https://api.example.com/submit" ACCOUNT MyAccount API "MyAPI" MESSAGE "{'data':'value'}"`
+
+### `POST <free> MESSAGE <free>`
+- **Descripción:** Envía un mensaje.
+- **Ejemplo:** `POST "Notification" MESSAGE "New order received."`
+
+### `LOCK TABLE <free> [PARTITION KEY <freeoptional>]`
+- **Descripción:** Bloquea una tabla o una partición para acceso exclusivo.
+- **Ejemplo:** `LOCK TABLE Orders PARTITION KEY 'Processing'`
+
+### `UNLOCK TABLE <free> [PARTITION KEY <freeoptional>]`
+- **Descripción:** Desbloquea una tabla o una partición.
+- **Ejemplo:** `UNLOCK TABLE Orders PARTITION KEY 'Processing'`
+
+### `HUB <free>`
+- **Descripción:** Comando genérico para el hub de AngelDB.
+- **Ejemplo:** `HUB STATUS`
+
+### `HELP <free>`
+- **Descripción:** Muestra información de ayuda sobre los comandos.
+- **Ejemplo:** `HELP SELECT`
+
+### `SET SCRIPTS DIRECTORY <free>`
+- **Descripción:** Establece el directorio de scripts.
+- **Ejemplo:** `SET SCRIPTS DIRECTORY '/my/scripts'`
+
+### `WHO IS <free> YOUR <free> DADY <free>`
+- **Descripción:** Un comando divertido para preguntar sobre el creador.
+- **Ejemplo:** `WHO IS YOUR DADY`
