@@ -369,7 +369,7 @@ namespace AngelDB {
                             }
 
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
                             break;
                         }
 
@@ -382,7 +382,7 @@ namespace AngelDB {
                                 break;
                             }
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required as a valid directory name, has invalid characters: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required as a valid directory name, has invalid characters: {valueKey.ToUpper()}");
                         }
 
                         break;
@@ -398,7 +398,7 @@ namespace AngelDB {
                                 break;
                             }
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
                             break;
                         }
 
@@ -409,7 +409,7 @@ namespace AngelDB {
 
                         if (!AngelDBTools.StringFunctions.IsStringValidPassword(command_dictionary[valueKey]))
                         {
-                            sb.AppendLine($"Syntax error, the following KeyWord, has invalid characters, only numbers and letters are allowed, minimum 8 characters: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord, has invalid characters, only numbers and letters are allowed, minimum 8 characters: {valueKey.ToUpper()}");
                         }
 
                         break;
@@ -426,7 +426,7 @@ namespace AngelDB {
                             }
 
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
                         }
 
                         break;
@@ -477,13 +477,13 @@ namespace AngelDB {
                                 break;
                             }
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
                             break;
                         }
 
                         if (!AngelDBTools.StringFunctions.IsStringNumber(command_dictionary[valueKey]))
                         {
-                            sb.AppendLine($"Syntax error, the following KeyWord, has invalid characters, only numbers are allowed: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord, has invalid characters, only numbers are allowed: {valueKey.ToUpper()}");
                         }
 
                         break;
@@ -499,7 +499,7 @@ namespace AngelDB {
                                 break;
                             }
 
-                            sb.AppendLine($"Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
+                            sb.AppendLine($"Error: Syntax error, the following KeyWord is required: {valueKey.ToUpper()}");
                             break;
                         }
 
@@ -514,7 +514,7 @@ namespace AngelDB {
                                 break;
                             }
 
-                            sb.AppendLine($"The following keyword has a syntax error: {valueKey.ToUpper()} -->" + l.errorString); ;
+                            sb.AppendLine($"Error: The following keyword has a syntax error: {valueKey.ToUpper()} -->" + l.errorString); ;
                         }
 
                         break;
